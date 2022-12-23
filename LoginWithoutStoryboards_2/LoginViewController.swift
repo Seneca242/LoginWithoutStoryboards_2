@@ -12,6 +12,14 @@ class LoginViewController: UIViewController {
     private let userName = "Dima"
     private let password = "123"
     
+//    private lazy var containerView: UIView = .init()
+    
+    private lazy var containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .red
+        return view
+    }()
+    
     private lazy var userNameTF: UITextField = {
         let textField = UITextField()
         textField.placeholder = "User Name"
@@ -30,7 +38,7 @@ class LoginViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Log In", for: .normal)
         button.setTitleColor(.blue, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.titleLabel?.font = UIFont(name: "Arial", size: 18)
         button.backgroundColor = .white
         button.addTarget(self, action: #selector(login), for: .touchUpInside)
 //        button.sizeToFit()
@@ -42,7 +50,7 @@ class LoginViewController: UIViewController {
         button.setTitle("Forgot User Name?", for: .normal)
         button.backgroundColor = .white
         button.setTitleColor(.blue, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+        button.titleLabel?.font = UIFont(name: "Arial", size: 18)
         button.addTarget(self, action: #selector(forgotName), for: .touchUpInside)
         return button
     }()
@@ -64,52 +72,62 @@ class LoginViewController: UIViewController {
 
     private func setupView() {
         view.backgroundColor = .gray
+        view.addSubview(containerView)
         setupSubviews(subviews: userNameTF, passwordTF, loginButton, forgotUserName, forgotPassword)
-        setupConstraints()
+        setupContainerConstraints()
     }
     
     private func setupSubviews(subviews: UIView...) {
         subviews.forEach { subview in
-            view.addSubview(subview)
+            containerView.addSubview(subview)
         }
     }
     
-    private func setupConstraints() {
+    private func setupContainerConstraints() {
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            containerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            containerView.heightAnchor.constraint(equalToConstant: 700)
+        ])
+        
         userNameTF.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            userNameTF.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 200),
-            userNameTF.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            userNameTF.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            userNameTF.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 300),
+            userNameTF.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            userNameTF.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16)
         ])
         
         passwordTF.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            passwordTF.topAnchor.constraint(equalTo: userNameTF.bottomAnchor, constant: 8),
-            passwordTF.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            passwordTF.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            passwordTF.topAnchor.constraint(equalTo: userNameTF.bottomAnchor, constant: 10),
+            passwordTF.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            passwordTF.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16)
         ])
         
         loginButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            loginButton.topAnchor.constraint(equalTo: passwordTF.bottomAnchor, constant: 15),
-            loginButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            loginButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            loginButton.topAnchor.constraint(equalTo: passwordTF.bottomAnchor, constant: 30)
         ])
         
         forgotUserName.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            forgotUserName.topAnchor.constraint(equalTo: passwordTF.bottomAnchor, constant: 80),
-            forgotUserName.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
+            forgotUserName.topAnchor.constraint(equalTo: passwordTF.bottomAnchor, constant: 90),
+            forgotUserName.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16)
         ])
         
         forgotPassword.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            forgotPassword.topAnchor.constraint(equalTo: passwordTF.bottomAnchor, constant: 80),
-            forgotPassword.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            forgotPassword.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            forgotPassword.topAnchor.constraint(equalTo: passwordTF.bottomAnchor, constant: 90)
         ])
     }
     
