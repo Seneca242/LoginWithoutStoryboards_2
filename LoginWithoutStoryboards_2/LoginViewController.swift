@@ -12,6 +12,33 @@ class LoginViewController: UIViewController {
     private let userName = "Dima"
     private let password = "123"
     
+    private lazy var stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        stackView.backgroundColor = .yellow
+        return stackView
+    }()
+    
+    private lazy var buttonsStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .fill
+        stackView.distribution = .equalSpacing
+        return stackView
+    }()
+    
+    private lazy var textFieldsStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        stackView.spacing = 16
+        return stackView
+    }()
+    
     private lazy var userNameTF: UITextField = {
         let textField = UITextField()
         textField.placeholder = "User Name"
@@ -33,7 +60,6 @@ class LoginViewController: UIViewController {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         button.backgroundColor = .white
         button.addTarget(self, action: #selector(login), for: .touchUpInside)
-//        button.sizeToFit()
         return button
     }()
     
@@ -59,12 +85,16 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.addSubview(stackView)
+        stackView.addArrangedSubview(buttonsStackView)
+        stackView.addArrangedSubview(textFieldsStackView)
         setupView()
     }
 
     private func setupView() {
         view.backgroundColor = .gray
-        setupSubviews(subviews: userNameTF, passwordTF, loginButton, forgotUserName, forgotPassword)
+        setupSubviews(subviews: stackView)
+        addElementsToStackView(elements: textFieldsStackView, loginButton, buttonsStackView)
         setupConstraints()
     }
     
@@ -74,43 +104,29 @@ class LoginViewController: UIViewController {
         }
     }
     
+    private func addElementsToStackView(elements: UIView...) {
+        elements.forEach { element in
+            stackView.addArrangedSubview(element)
+        }
+    }
+    
     private func setupConstraints() {
-        userNameTF.translatesAutoresizingMaskIntoConstraints = false
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            userNameTF.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 200),
-            userNameTF.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            userNameTF.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+//            stackView.heightAnchor.constraint(equalToConstant: 300)
         ])
         
-        passwordTF.translatesAutoresizingMaskIntoConstraints = false
+        textFieldsStackView.addArrangedSubview(userNameTF)
+        textFieldsStackView.addArrangedSubview(passwordTF)
         
-        NSLayoutConstraint.activate([
-            passwordTF.topAnchor.constraint(equalTo: userNameTF.bottomAnchor, constant: 8),
-            passwordTF.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            passwordTF.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
+        buttonsStackView.addArrangedSubview(forgotUserName)
+        buttonsStackView.addArrangedSubview(forgotPassword)
         
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            loginButton.topAnchor.constraint(equalTo: passwordTF.bottomAnchor, constant: 15),
-            loginButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-        
-        forgotUserName.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            forgotUserName.topAnchor.constraint(equalTo: passwordTF.bottomAnchor, constant: 80),
-            forgotUserName.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
-        ])
-        
-        forgotPassword.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            forgotPassword.topAnchor.constraint(equalTo: passwordTF.bottomAnchor, constant: 80),
-            forgotPassword.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
     }
     
     private func showAlert(title: String, message: String){
