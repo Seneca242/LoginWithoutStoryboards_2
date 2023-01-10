@@ -6,7 +6,8 @@
 //
 
 import UIKit
-
+//import SnapKit
+// подключить SnapKit и попробовать
 class LoginViewController: UIViewController {
 
     private let userName = "Dima"
@@ -16,9 +17,12 @@ class LoginViewController: UIViewController {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 8
-        stackView.alignment = .fill
-        stackView.distribution = .fill
+        stackView.alignment = .center
+        stackView.distribution = .fillEqually
         stackView.backgroundColor = .yellow
+        // почитать об этом
+//        stackView.setContentCompressionResistancePriority(<#T##priority: UILayoutPriority##UILayoutPriority#>, for: <#T##NSLayoutConstraint.Axis#>)
+//        stackView.setContentHuggingPriority(<#T##priority: UILayoutPriority##UILayoutPriority#>, for: <#T##NSLayoutConstraint.Axis#>)
         return stackView
     }()
     
@@ -27,15 +31,6 @@ class LoginViewController: UIViewController {
         stackView.axis = .horizontal
         stackView.alignment = .fill
         stackView.distribution = .equalSpacing
-        return stackView
-    }()
-    
-    private lazy var textFieldsStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .fill
-        stackView.distribution = .fill
-        stackView.spacing = 16
         return stackView
     }()
     
@@ -55,6 +50,7 @@ class LoginViewController: UIViewController {
     
     private lazy var loginButton: UIButton = {
         let button = UIButton()
+        button.configuration = .bordered()
         button.setTitle("Log In", for: .normal)
         button.setTitleColor(.blue, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
@@ -87,14 +83,13 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(stackView)
         stackView.addArrangedSubview(buttonsStackView)
-        stackView.addArrangedSubview(textFieldsStackView)
         setupView()
     }
 
     private func setupView() {
         view.backgroundColor = .gray
         setupSubviews(subviews: stackView)
-        addElementsToStackView(elements: textFieldsStackView, loginButton, buttonsStackView)
+        addElementsToStackView(elements: userNameTF, passwordTF, loginButton, buttonsStackView)
         setupConstraints()
     }
     
@@ -121,11 +116,33 @@ class LoginViewController: UIViewController {
 //            stackView.heightAnchor.constraint(equalToConstant: 300)
         ])
         
-        textFieldsStackView.addArrangedSubview(userNameTF)
-        textFieldsStackView.addArrangedSubview(passwordTF)
+        loginButton.translatesAutoresizingMaskIntoConstraints = false
         
+        NSLayoutConstraint.activate([
+            userNameTF.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
+            userNameTF.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
+            passwordTF.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
+            passwordTF.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
+            buttonsStackView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
+            buttonsStackView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
+        ])
+                
         buttonsStackView.addArrangedSubview(forgotUserName)
         buttonsStackView.addArrangedSubview(forgotPassword)
+        
+        //
+        NSLayoutConstraint.activate([
+            forgotUserName.leadingAnchor.constraint(equalTo: buttonsStackView.leadingAnchor),
+            forgotUserName.trailingAnchor.constraint(equalTo: buttonsStackView.trailingAnchor),
+            forgotUserName.leadingAnchor.constraint(equalTo: forgotPassword.leadingAnchor),
+            forgotUserName.leadingAnchor.constraint(equalTo: buttonsStackView.leadingAnchor),
+        ])
+        
+        // более красивый способ через SnapKit
+//        forgotUserName.snp.makeConstraints {
+//            $0.left.right.equalToSuperview().proirity(.defaultLow)
+//            $0.height.equal(to: passwordTF).multiple(0.5)
+//        }
         
     }
     
@@ -152,8 +169,27 @@ class LoginViewController: UIViewController {
             )
         }
         let welcomeVC = WelcomeViewController()
-        welcomeVC.modalPresentationStyle = .fullScreen
-        present(welcomeVC, animated: true)
+        let test = UIViewController() // заменить свой вью контроллер и определить его тайтл
+        
+        let navigationControllerTest = UINavigationController(rootViewController: test)
+//        navigationControllerTest.navigationBar
+//        welcomeVC.modalPresentationStyle = .fullScreen
+//        present(welcomeVC, animated: true)
+        
+        //
+        let tabbar = UITabBarController()
+        welcomeVC.tabBarItem = .init(title: "welcome", image: nil, tag: 0)
+        navigationControllerTest.tabBarItem = .init(title: "test", image: nil, selectedImage: nil)
+        
+        tabbar.modalPresentationStyle = .fullScreen
+//        tabbar.modalTransitionStyle
+        tabbar.viewControllers = [welcomeVC, navigationControllerTest]
+        
+        present(tabbar, animated: true)
+        
+        // понадобятся в дальнейшем
+//        navigationControllerTest.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)
+//        navigationControllerTest.popViewController(animated: <#T##Bool#>)
     }
     
     @objc private func forgotName() {
